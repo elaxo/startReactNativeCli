@@ -1,118 +1,105 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+//import liraries
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import logo from './assets/logo.png';
+import Animated, { useAnimatedStyle,Easing, useSharedValue, withRepeat, withSequence, withSpring, withTiming, withDelay } from 'react-native-reanimated';
+// create a component
+const App = () => {
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+  const fadeInValue = useSharedValue(0.4)
+  const leftValue = useSharedValue(-500)
+  const textOpValue = useSharedValue(1)
+  const widthVal = useSharedValue(120)
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+  let widthStyle = useAnimatedStyle(()=>({width:widthVal.value}))
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
 
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  const opacity = useAnimatedStyle(()=>{
+
+    return {
+      opacity:fadeInValue.value
+    }
+
+  })
+
+  const goLeft = useAnimatedStyle(()=>{
+    return {
+      left:leftValue.value
+    }
+  })
+
+  const opcityText = useAnimatedStyle(()=>{
+    return {
+      opacity:textOpValue.value
+    }
+  })
+  
+
+useEffect(()=>{
+
+  widthVal.value = withRepeat(withTiming(300,{
+    duration:10000
+  }),-1)
+
+  fadeInValue.value = withRepeat(withTiming(1,{
+    duration:3000,
+    easing:Easing.bounce,
+  }),-1,true)
+
+  leftValue.value = withSequence(withTiming(50,{
+    duration:4000,
+    easing:Easing.bounce
+  }))
+
+  textOpValue.value = withRepeat(withTiming(0.5,{
+    duration:3000,
+    easing:Easing.elastic(1)
+  }),-1,true)
+
+},[])
+
+
+
+  
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+    <View style={styles.container}>
+      <Animated.Image source={logo} style={[{
+        width:200,
+        objectFit:"contain",
+      },opacity]}/>
+      <Animated.Text style={[{
+        fontSize:30,
+        position:"absolute",
+        top:"55%",
+        color:"#0099ff",
+        fontFamily:"rr"
+      },goLeft,opcityText]}>EplusApp Address</Animated.Text>
+      <Animated.Text 
+      style={[{
+        textAlign:"left",
+        fontSize:30,
+        position:"absolute",
+        top:"80%",
+        left:0,
+        borderColor:"#0099ff",
+        color:"#0099ff",
+        borderBottomWidth:10
+      },widthStyle]}
+      >Loading...
+      </Animated.Text>
     </View>
   );
-}
+};
 
-function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
+// define your styles
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#000',
   },
 });
 
+//make this component available to the app
 export default App;
